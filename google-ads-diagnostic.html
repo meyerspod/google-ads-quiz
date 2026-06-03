@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Ads Diagnostic Flowchart</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        header p {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .issue-button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            font-weight: 500;
+        }
+
+        .issue-button:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .issue-button.active {
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        }
+
+        .details {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .details.active {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .details h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .causes-list {
+            list-style: none;
+        }
+
+        .causes-list li {
+            padding: 12px 0;
+            border-bottom: 1px solid #e0e0e0;
+            color: #333;
+        }
+
+        .causes-list li:last-child {
+            border-bottom: none;
+        }
+
+        .cause-title {
+            font-weight: 600;
+            color: #764ba2;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .cause-desc {
+            font-size: 0.95em;
+            color: #666;
+            margin-left: 0;
+        }
+
+        .flowchart-section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            margin-bottom: 40px;
+            overflow-x: auto;
+        }
+
+        .flowchart-section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .mermaid {
+            display: flex;
+            justify-content: center;
+        }
+
+        .sources-section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        .sources-section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        .sources-list {
+            list-style: none;
+        }
+
+        .sources-list li {
+            padding: 12px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .sources-list li:last-child {
+            border-bottom: none;
+        }
+
+        .sources-list a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .sources-list a:hover {
+            text-decoration: underline;
+        }
+
+        .source-type {
+            display: inline-block;
+            background: #e8eaf6;
+            color: #667eea;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            margin-right: 8px;
+            font-weight: 600;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+
+            header h1 {
+                font-size: 1.8em;
+            }
+        }
+
+        .quick-tip {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        .quick-tip strong {
+            color: #856404;
+        }
+
+        .quick-tip p {
+            color: #856404;
+            margin: 0;
+        }
+
+        .link-button {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 10px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.9em;
+            margin-top: 10px;
+            transition: background 0.3s;
+        }
+
+        .link-button:hover {
+            background: #764ba2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Google Ads Diagnostic Tool</h1>
+            <p>Interactive flowchart to diagnose and troubleshoot common Google Ads issues</p>
+        </header>
+
+        <div class="main-content">
+            <div class="card">
+                <h2>Select Your Issue</h2>
+                <button class="issue-button" onclick="showDetails('cpc')">Rising Cost Per Click (CPC)</button>
+                <button class="issue-button" onclick="showDetails('conversion')">Dipping Conversion Rate</button>
+                <button class="issue-button" onclick="showDetails('traffic')">Low Traffic / Impressions</button>
+                <button class="issue-button" onclick="showDetails('quality')">Low Quality Score</button>
+                <button class="issue-button" onclick="showDetails('disapproved')">Ads Disapproved</button>
+                <button class="issue-button" onclick="showDetails('ctr')">Low Click-Through Rate (CTR)</button>
+            </div>
+
+            <div class="card">
+                <div id="cpc" class="details">
+                    <h3>Rising Cost Per Click</h3>
+                    <ul class="causes-list">
+                        <li>
+                            <span class="cause-title">Increased Competition</span>
+                            <span class="cause-desc">More advertisers bidding for the same keywords drives up prices through supply/demand pressure</span>
+                        </li>
+                        <li>
+                            <span class="cause-title">Lower Quality Score</span>
+                            <span class="cause-desc">Keywords with Quality Scores of 4 vs 6 can cost 16-25% more per click</span>
+                        </li>
+                        <li>
+                            <span class="cause-title">Bid Strategy Changes</span>
+                            <span class="cause-desc">Smart Bidding strategies may increase bids if predicting conversions</span>
+                        </li>
+                        <li>
+                            <span class="cause-title">New Competitors</span>
+                            <span class="cause-desc">Entry of new bidders in your market segment</span>
+                        </li>
+                        <li>
+                            <span class="cause-title">Seasonal Demand</span>
+                            <span class="cause-desc">High-intent search volume in peak seasons increases competition</span>
+                        </li>
+                        <li>
+                            <span class="cause-title">Algorithm Updates</span>
+                            <span class="cause-desc">Google's updates to auction dynamics or quality scoring</span>
+                        </li>
+                    </ul>
+                    <div class="quick-tip">
+                        <strong>Quick Fix:</strong> Improve Quality Score by aligning keywords with ad copy and improving landing page relevance
+                    </div>
+                </div>
+
+                <div id="conversion" class="details">
+                    <h3>Dipping Conversion Rate</h3>
+                    <ul class="causes-list">
+                        <li>
+                            <span class="cause-title">Broken Conversion Tracking</span>
+                            <span class="cause-desc">Most common cause - tracking tag may not be firing correctly (check DevTools)</span>
+                        </li>
+                        <li>
+                            <span class="cause-title">Website Changes</span>
+                            <span class="cause-desc">Recent updates to checkout flow, forms, or landing page structure</span>
+                        </li>
+                        <li>
+                            <span class="cause-title">Poor Landing Page Experience</span>
+                            <span class="cause-desc">Slow load time, unclear CTA, or mobile responsiveness issues</span>
+                        </li>
+                        <li>
+                            <span class="cause-title">Campaign Setting Changes</span>
+                            <span class="cause-desc">Changes to bidding strategy, budget, keywords, or audience targeting</span>
+                        </li>
+                        <li>
+                            <span class="cause-title">Quality Score Decline</span>
+                            <span class="cause-desc">Poor ad relevance or expected CTR attracting wrong audience</span>
+                        </li>
+                        <li>
+                            <span class="cause-title">Audience Saturation</span>
+                            <span class="cause-desc">Retargeting audience exhaustion or diminishing returns</span>
+                        </li>
+                    </ul>
+                    <div class="quick-tip">
+                        <strong>First Step:</strong> Compare Google Ads conversions with GA4 - if only Ads dropped, it's likely a tracking issue
+                    </div>
+                </div>
+
+                <div id="traffic" class="details">
+                    <h3>Low Traffic / Impressions</h3>
+                    <ul class="causes-list">
+                        <li>
+                            <span class="cause-title">Insufficient Budget</span>
+                            <span class="cause-desc">Daily budget too low or reaching daily cap too early</span>
+                        </li>
+                        <li>
+                            <span class="cause-title">Ad Disapproval</span>
+                            <span class="cause-desc">Ads may be paused or not serving due to policy violations</span>
+                        </li>
+                        <li>
+                            <span class="cause-title">Poor Keyword Relevance</span>
+                            <span class="cause-desc">Keywords not matching user search intent or too narrow</span>
+                        </li>
+                        <li>
+                            <span class="cause-title">Low Quality Score</span>
+                            <span class="cause-desc">Low ad rank reduces impressions and placement positions</span>
+                        </li>
+                        <li>
+                            <span class="cause-title">Restrictive Targeting</span>
+                            <span class="cause-desc">Audience, location, or device targeting too narrow</span>
+                        </li>
+                        <li>
+                            <span class="cause-title">Search Volume Issues</span>
+                            <span class="cause-desc">Keywords with low search volume or off-season decline</span>
+                        </li>
+                    </ul>
+                    <div class="quick-tip">
+                        <strong>Quick Check:</strong> Use Google Ads' Diagnosis tool to identify why specific search terms aren't serving
+                    </div>
+                </div>
+
+                <div id="quality" class="details">
+                    <h3>Low Quality Score</h3>
+                    <ul class="causes-list">
+                        <li>
+                            <span class="cause-title">Poor Ad Relevance</span>
+                            <span class="cause-desc">Ad copy doesn't closely match search query or keyword intent</span>
+                        </li>
+                        <li>
+                            <span class="cause-title">Low Expected CTR</span>
+                            <span class="cause-desc">Ad position, messaging, or formatting not compelling to users</span>
+                        </li>
+                        <li>
+                            <span class="cause-title">Poor Landing Page Experience</span>
+                            <span class="cause-desc">Page doesn't match ad messaging, slow load time, or poor mobile optimization</span>
+                        </li>
+                        <li>
+                            <span class="cause-title">Overly Broad Keywords</span>
+                            <span class="cause-desc">Broad match keywords triggering for irrelevant searches</span>
+                        </li>
+                        <li>
+                            <span class="cause-title">Disorganized Ad Groups</span>
+                            <span class="cause-desc">Too many keywords with different intents in one ad group</span>
+                        </li>
+                        <li>
+                            <span class="cause-title">New Keywords</span>
+                            <span class="cause-desc">Keywords with insufficient impression history need time to gather data</span>
+                        </li>
+                    </ul>
+                    <div class="quick-tip">
+                        <strong>Impact:</strong> Quality Score of 6 vs 4 = 16-25% higher CPC. Quality Score of 10 = up to 50% lower CPC than average
+                    </div>
+                </div>
+
+                <div id="disapproved" class="details">
+                    <h3>Ads Disapproved</h3>
+                    <ul class="causes-list">
+                        <li>
+                            <span class="cause-title">Policy Violations</span>
+                            <span class="cause-desc">Ad content violates Google Ads policies (prohibited content, misleading claims)</span>
+                        </li>
+                        <li>
+                            <span class="cause-title">Landing Page Issues</span>
+                            <span class="cause-desc">Destination URL is broken, has malware, or violates policies</span>
+                        </li>
+                        <li>
+                            <span class="cause-title">Unrelated Keywords</span>
+                            <span class="cause-desc">Ad copy and destination don't relate to keywords in ad group</span>
+                        </li>
+                        <li>
+                            <span class="cause-title">Invalid Character Use</span>
+                            <span class="cause-desc">Special characters or formatting that violates ad policies</span>
+                        </li>
+                        <li>
+                            <span class="cause-title">Trademark Violations</span>
+                            <span class="cause-desc">Using trademarked terms without authorization in certain contexts</span>
+                        </li>
+                        <li>
+                            <span class="cause-title">Geographic Restrictions</span>
+                            <span class="cause-desc">Ad content not compliant with geo-specific regulations</span>
+                        </li>
+                    </ul>
+                    <div class="quick-tip">
+                        <strong>Resolution:</strong> Click "View and fix policy issues" in the disapproval notice, then read the specific policy link
+                    </div>
+                </div>
+
+                <div id="ctr" class="details">
+                    <h3>Low Click-Through Rate (CTR)</h3>
+                    <ul class="causes-list">
+                        <li>
+                            <span class="cause-title">Weak Ad Copy</span>
+                            <span class="cause-desc">Headline and description lack urgency, clarity, or compelling value proposition</span>
+                        </li>
+                        <li>
+                            <span class="cause-title">Poor Ad Position</span>
+                            <span class="cause-desc">Ad showing at lower positions due to low Quality Score or bid</span>
+                        </li>
+                        <li>
+                            <span class="cause-title">Missing Ad Extensions</span>
+                            <span class="cause-desc">Not using callout, sitelink, or structured snippet extensions to stand out</span>
+                        </li>
+                        <li>
+                            <span class="cause-title">Irrelevant Keywords</span>
+                            <span class="cause-desc">Keywords matching non-qualified searches not matching user intent</span>
+                        </li>
+                        <li>
+                            <span class="cause-title">Lack of Differentiation</span>
+                            <span class="cause-desc">Ad doesn't stand out from competitors in search results</span>
+                        </li>
+                        <li>
+                            <span class="cause-title">Mobile Optimization Issues</span>
+                            <span class="cause-desc">Ad text or destination page not optimized for mobile users</span>
+                        </li>
+                    </ul>
+                    <div class="quick-tip">
+                        <strong>Quick Fix:</strong> Add more ad extensions, improve headlines with keywords, and test variations to improve CTR
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flowchart-section">
+            <h2>Google Ads Diagnostic Flowchart</h2>
+            <div class="mermaid">
+graph TD
+    A["Start: Performance Issue?"] --> B{"What are you experiencing?"}
+    B -->|High Spend| C["Rising CPCs"]
+    B -->|Low Conversions| D["Conversion Rate Down"]
+    B -->|No Traffic| E["Low Impressions"]
+    B -->|Quality Issues| F["Quality Score Low"]
+    B -->|Ad Issues| G["Ads Not Running"]
+
+    C --> C1{"Check Quality Score"}
+    C1 -->|Low| C2["[+] Improve relevance<br/>and landing pages"]
+    C1 -->|High| C3["[+] Market competition<br/>or algorithm changes"]
+
+    D --> D1{"Compare GA4 vs Ads"}
+    D1 -->|Both Down| D2["[+] Real performance drop<br/>Check: Landing page,<br/>offers, audience"]
+    D1 -->|Only Ads Down| D3["[+] Tracking issue<br/>Verify conversion tag<br/>in DevTools"]
+
+    E --> E1{"Check Budget &amp; Status"}
+    E1 -->|Budget OK| E2["[+] Quality/Relevance issue<br/>Improve ad copy &amp;<br/>landing page"]
+    E1 -->|Budget Low| E3["[+] Increase budget<br/>or enable automated<br/>bidding"]
+
+    F --> F1{"Diagnose component"}
+    F1 -->|Ad Relevance| F2["[+] Better match keywords<br/>in ad copy"]
+    F1 -->|Landing Page| F3["[+] Improve relevance,<br/>speed, mobile UX"]
+    F1 -->|Expected CTR| F4["[+] Improve ad copy,<br/>add extensions"]
+
+    G --> G1{"Check Account"}
+    G1 -->|Disapproved| G2["[+] Review policies,<br/>fix violations"]
+    G1 -->|Paused| G3["[+] Enable campaigns<br/>and ads"]
+    G1 -->|Other| G4["[+] Check diagnostic<br/>tool for issues"]
+            </div>
+        </div>
+
+        <div class="sources-section">
+            <h2>Sources</h2>
+            <p style="margin-bottom: 20px; color: #666;">All information sourced from Google Ads official support and industry-leading resources:</p>
+            <ul class="sources-list">
+                <li>
+                    <span class="source-type">Official</span>
+                    <a href="https://support.google.com/google-ads/supporthub?hl=en" target="_blank">Google Ads Help Center</a>
+                </li>
+                <li>
+                    <span class="source-type">Official</span>
+                    <a href="https://support.google.com/google-ads/answer/6167118?hl=en" target="_blank">About Quality Score for Search Campaigns</a>
+                </li>
+                <li>
+                    <span class="source-type">Official</span>
+                    <a href="https://support.google.com/google-ads/answer/6167130?hl=en" target="_blank">5 Ways to Use Quality Score to Improve Performance</a>
+                </li>
+                <li>
+                    <span class="source-type">Official</span>
+                    <a href="https://support.google.com/google-ads/answer/9208915?hl=en" target="_blank">How to Fix Search Campaigns Not Running or Low Traffic</a>
+                </li>
+                <li>
+                    <span class="source-type">Official</span>
+                    <a href="https://support.google.com/google-ads/troubleshooter/13455130" target="_blank">Conversion Tracking Troubleshooter</a>
+                </li>
+                <li>
+                    <span class="source-type">Official</span>
+                    <a href="https://support.google.com/google-ads/answer/12077891?hl=en" target="_blank">Troubleshooting Performance Fluctuations and Changes</a>
+                </li>
+                <li>
+                    <span class="source-type">Official</span>
+                    <a href="https://support.google.com/google-ads/answer/6167132?hl=en" target="_blank">What Matters for Ads Quality</a>
+                </li>
+                <li>
+                    <span class="source-type">Industry</span>
+                    <a href="https://www.vladimirjones.com/blog/10-step-guide-to-troubleshoot-drops-in-google-ads-conversions" target="_blank">10-Step Guide to Troubleshoot Conversion Drops</a>
+                </li>
+                <li>
+                    <span class="source-type">Industry</span>
+                    <a href="https://pete-bowen.com/how-to-find-the-real-reason-conversions-dropped" target="_blank">How to Find the Real Reason Conversions Dropped</a>
+                </li>
+                <li>
+                    <span class="source-type">Industry</span>
+                    <a href="https://foundrycro.com/blog/why-google-ads-conversion-rate-dropping-2026/" target="_blank">12 Reasons Your Google Ads Conversion Rate Is Dropping</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function showDetails(issueId) {
+            // Hide all details
+            const allDetails = document.querySelectorAll('.details');
+            allDetails.forEach(detail => detail.classList.remove('active'));
+
+            // Remove active class from all buttons
+            const allButtons = document.querySelectorAll('.issue-button');
+            allButtons.forEach(btn => btn.classList.remove('active'));
+
+            // Show selected details
+            const selectedDetail = document.getElementById(issueId);
+            if (selectedDetail) {
+                selectedDetail.classList.add('active');
+            }
+
+            // Add active class to clicked button
+            event.target.classList.add('active');
+
+            // Scroll to details on mobile
+            if (window.innerWidth < 768) {
+                selectedDetail.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // Initialize mermaid
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+        mermaid.contentLoaderAsync();
+    </script>
+</body>
+</html>
