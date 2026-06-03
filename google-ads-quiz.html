@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Ads Learning Quiz</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #0f1419;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: #e1e8ed;
+        }
+
+        .container {
+            background: #1a1f2e;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            max-width: 700px;
+            width: 100%;
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00d4ff 0%, #0099ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            font-size: 28px;
+            color: #f5f7fa;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            color: #8b95a6;
+            font-size: 14px;
+        }
+
+        /* Home Screen */
+        .home-screen {
+            text-align: center;
+        }
+
+        .intro-text {
+            color: #b3bcc7;
+            line-height: 1.8;
+            margin: 20px 0 30px;
+        }
+
+        .level-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .level-btn {
+            padding: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .level-btn.beginner {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.15) 0%, rgba(34, 197, 94, 0.05) 100%);
+            border-color: rgba(34, 197, 94, 0.3);
+            color: #86efac;
+        }
+
+        .level-btn.beginner:hover {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.25) 0%, rgba(34, 197, 94, 0.15) 100%);
+            border-color: rgba(34, 197, 94, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(34, 197, 94, 0.2);
+        }
+
+        .level-btn.intermediate {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(59, 130, 246, 0.05) 100%);
+            border-color: rgba(59, 130, 246, 0.3);
+            color: #93c5fd;
+        }
+
+        .level-btn.intermediate:hover {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.25) 0%, rgba(59, 130, 246, 0.15) 100%);
+            border-color: rgba(59, 130, 246, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(59, 130, 246, 0.2);
+        }
+
+        .level-title {
+            display: block;
+            font-size: 18px;
+            margin-bottom: 5px;
+            color: #f5f7fa;
+        }
+
+        .level-desc {
+            font-size: 13px;
+            opacity: 0.75;
+            color: #b3bcc7;
+        }
+
+        /* Quiz Screen */
+        .quiz-screen {
+            display: none;
+        }
+
+        .progress-bar {
+            margin-bottom: 30px;
+        }
+
+        .progress-info {
+            font-size: 13px;
+            color: #8b95a6;
+            margin-bottom: 8px;
+        }
+
+        .progress {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00d4ff, #0099ff);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .question-number {
+            font-size: 13px;
+            color: #6b7684;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .question {
+            font-size: 20px;
+            font-weight: 700;
+            color: #f5f7fa;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            padding: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 15px;
+            background: rgba(255, 255, 255, 0.03);
+            color: #e1e8ed;
+            display: flex;
+            align-items: center;
+        }
+
+        .option:hover {
+            border-color: rgba(0, 212, 255, 0.4);
+            background: rgba(0, 212, 255, 0.08);
+        }
+
+        .option input[type="radio"] {
+            margin-right: 12px;
+            accent-color: #00d4ff;
+            cursor: pointer;
+        }
+
+        .option.selected {
+            border-color: rgba(0, 212, 255, 0.6);
+            background: rgba(0, 212, 255, 0.12);
+        }
+
+        .option.correct {
+            border-color: rgba(34, 197, 94, 0.6);
+            background: rgba(34, 197, 94, 0.12);
+        }
+
+        .option.incorrect {
+            border-color: rgba(239, 68, 68, 0.6);
+            background: rgba(239, 68, 68, 0.12);
+        }
+
+        .feedback {
+            margin-top: 20px;
+            padding: 16px;
+            border-radius: 10px;
+            display: none;
+            font-size: 14px;
+            line-height: 1.6;
+            border-left: 4px solid;
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        .feedback.correct {
+            background: rgba(34, 197, 94, 0.12);
+            color: #86efac;
+            border-left-color: #22c55e;
+        }
+
+        .feedback.incorrect {
+            background: rgba(239, 68, 68, 0.12);
+            color: #fca5a5;
+            border-left-color: #ef4444;
+        }
+
+        .feedback a {
+            color: #00d4ff;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .feedback a:hover {
+            text-decoration: underline;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 30px;
+            justify-content: space-between;
+        }
+
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00d4ff 0%, #0099ff 100%);
+            color: #0f1419;
+            flex: 1;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 212, 255, 0.3);
+        }
+
+        .btn-primary:disabled {
+            background: rgba(255, 255, 255, 0.1);
+            color: #6b7684;
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.06);
+            color: #e1e8ed;
+            flex: 1;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Results Screen */
+        .results-screen {
+            display: none;
+            text-align: center;
+        }
+
+        .results-title {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #f5f7fa;
+            font-weight: 700;
+        }
+
+        .score-display {
+            font-size: 48px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00d4ff 0%, #0099ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 20px 0;
+        }
+
+        .score-breakdown {
+            background: rgba(255, 255, 255, 0.04);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            text-align: left;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .score-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            color: #e1e8ed;
+        }
+
+        .score-item:last-child {
+            border-bottom: none;
+        }
+
+        .feedback-message {
+            margin: 20px 0;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 15px;
+            line-height: 1.6;
+            border-left: 4px solid;
+        }
+
+        .feedback-message.excellent {
+            background: rgba(34, 197, 94, 0.12);
+            color: #86efac;
+            border-left-color: #22c55e;
+        }
+
+        .feedback-message.good {
+            background: rgba(59, 130, 246, 0.12);
+            color: #93c5fd;
+            border-left-color: #3b82f6;
+        }
+
+        .feedback-message.fair {
+            background: rgba(245, 158, 11, 0.12);
+            color: #fcd34d;
+            border-left-color: #f59e0b;
+        }
+
+        .results-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        .results-buttons button {
+            flex: 1;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 24px;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+
+            .question {
+                font-size: 18px;
+            }
+
+            .score-display {
+                font-size: 36px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">Google Ads</div>
+            <h1>Learning Quiz</h1>
+            <p class="subtitle">Test your paid search knowledge</p>
+        </div>
+
+        <!-- Home Screen -->
+        <div class="home-screen" id="homeScreen">
+            <p class="intro-text">
+                Welcome to the Google Ads Learning Quiz! This quiz will help you assess your knowledge of Google Ads fundamentals and advanced concepts. Select your skill level to begin.
+            </p>
+            <div class="level-buttons">
+                <button class="level-btn beginner" onclick="startQuiz('beginner')">
+                    <span class="level-title">Beginner Level</span>
+                    <span class="level-desc">Fundamentals & Core Concepts • 10 Questions</span>
+                </button>
+                <button class="level-btn intermediate" onclick="startQuiz('intermediate')">
+                    <span class="level-title">Intermediate Level</span>
+                    <span class="level-desc">Advanced Optimization & Strategy • 10 Questions</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div class="quiz-screen" id="quizScreen">
+            <div class="progress-bar">
+                <div class="progress-info">
+                    Question <span id="currentQuestion">1</span> of <span id="totalQuestions">1</span>
+                </div>
+                <div class="progress">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+
+            <div class="question-number" id="levelBadge">BEGINNER</div>
+            <div class="question" id="question"></div>
+
+            <div class="options" id="options"></div>
+
+            <div class="feedback" id="feedback"></div>
+
+            <div class="button-group">
+                <button class="btn-secondary" onclick="previousQuestion()">Previous</button>
+                <button class="btn-primary" id="nextBtn" onclick="nextQuestion()" disabled>Next</button>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div class="results-screen" id="resultsScreen">
+            <div class="results-title">Quiz Complete!</div>
+            <div class="score-display" id="scoreDisplay">0%</div>
+
+            <div class="score-breakdown">
+                <div class="score-item">
+                    <span>Correct Answers:</span>
+                    <span id="correctCount">0</span>
+                </div>
+                <div class="score-item">
+                    <span>Total Questions:</span>
+                    <span id="totalCount">0</span>
+                </div>
+                <div class="score-item">
+                    <span>Level:</span>
+                    <span id="levelDisplay">-</span>
+                </div>
+            </div>
+
+            <div class="feedback-message" id="resultMessage"></div>
+
+            <div class="results-buttons">
+                <button class="btn-secondary" onclick="retakeBeginner()">Beginner</button>
+                <button class="btn-secondary" onclick="retakeIntermediate()">Intermediate</button>
+                <button class="btn-primary" onclick="goHome()">Back to Home</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Quiz Questions Database
+        const quizzes = {
+            beginner: [
+                {
+                    question: "What are the three layers of Google Ads account organization from largest to smallest?",
+                    options: [
+                        "Account, Campaign, Ad Group",
+                        "Ad Group, Campaign, Account",
+                        "Campaign, Account, Ad Group",
+                        "Account, Ad Group, Campaign"
+                    ],
+                    correct: 0,
+                    explanation: "Google Ads accounts are organized in a three-level hierarchy: Account (top level with billing info), Campaigns (have their own budget and settings), and Ad Groups (contain similar ads and keywords). <a href='https://support.google.com/google-ads/answer/1704396' target='_blank'>Learn more</a>",
+                    source: "Google Ads Help Center"
+                },
+                {
+                    question: "What is the maximum number of ad groups you can have per campaign?",
+                    options: [
+                        "5,000",
+                        "10,000",
+                        "20,000",
+                        "50,000"
+                    ],
+                    correct: 2,
+                    explanation: "According to Google Ads, you can have up to 20,000 ad groups per campaign. Each account can have up to 10,000 campaigns, and each ad group can contain up to 50 text ads. <a href='https://support.google.com/google-ads/answer/6372655' target='_blank'>Learn more</a>",
+                    source: "Google Ads Help Center"
+                },
+                {
+                    question: "Which bidding strategy is best if you want to focus on getting the most clicks within your budget?",
+                    options: [
+                        "Target CPA (Cost Per Action)",
+                        "Maximize Clicks",
+                        "Target ROAS",
+                        "Cost Per Mille (CPM)"
+                    ],
+                    correct: 1,
+                    explanation: "Maximize Clicks is an automated smart bidding strategy that's the simplest way to bid for clicks. You set an average daily budget, and Google Ads automatically manages your bids to bring you the most clicks possible within your budget. <a href='https://support.google.com/google-ads/answer/2472725' target='_blank'>Learn more</a>",
+                    source: "Google Ads Help Center"
+                },
+                {
+                    question: "Quality Score is calculated based on which three components?",
+                    options: [
+                        "Ad spend, Click-through rate, Landing page quality",
+                        "Expected CTR, Ad relevance, Landing page experience",
+                        "Impressions, Budget, Conversions",
+                        "Keywords, Ad text, Bid amount"
+                    ],
+                    correct: 1,
+                    explanation: "Quality Score is determined by three main factors: Expected Clickthrough Rate (CTR), Ad Relevance, and Landing Page Experience. Higher Quality Scores lead to better ad positions and lower costs. <a href='https://support.google.com/google-ads/answer/6167118' target='_blank'>Learn more</a>",
+                    source: "Google Ads Help Center"
+                },
+                {
+                    question: "What is the primary purpose of organizing related keywords into the same ad group?",
+                    options: [
+                        "To reduce your overall ad spend",
+                        "To guarantee higher ad positions",
+                        "To show relevant ads to customers searching for similar things",
+                        "To automatically increase your Quality Score"
+                    ],
+                    correct: 2,
+                    explanation: "The best practice is to bundle related ads together with related keywords into an ad group, so that all related ads can be shown to customers searching for similar things. This improves relevance and performance. <a href='https://support.google.com/google-ads/answer/6372655' target='_blank'>Learn more</a>",
+                    source: "Google Ads Help Center"
+                },
+                {
+                    question: "What are the three keyword match types in Google Ads?",
+                    options: [
+                        "Broad, Phrase, and Exact",
+                        "Basic, Standard, and Premium",
+                        "General, Specific, and Targeted",
+                        "Wide, Medium, and Narrow"
+                    ],
+                    correct: 0,
+                    explanation: "Google Ads offers three keyword match types: Broad Match (reaches the most searches), Phrase Match (reaches searches that include your phrase), and Exact Match (most control, reaches fewest searches). <a href='https://support.google.com/google-ads/answer/7478529' target='_blank'>Learn more</a>",
+                    source: "Google Ads Help Center"
+                },
+                {
+                    question: "Which keyword match type provides the most control over which searches trigger your ads?",
+                    options: [
+                        "Broad Match",
+                        "Phrase Match",
+                        "Exact Match",
+                        "All match types are equal"
+                    ],
+                    correct: 2,
+                    explanation: "Exact Match gives you the most control over who views your ad. It's denoted with square brackets like [exact keyword]. While it reaches fewer searches than phrase or broad match, it targets the most relevant searches. <a href='https://support.google.com/google-ads/answer/7478529' target='_blank'>Learn more</a>",
+                    source: "Google Ads Help Center"
+                },
+                {
+                    question: "What is conversion tracking in Google Ads?",
+                    options: [
+                        "A way to count how many impressions your ads receive",
+                        "A method to track when users complete a valuable action after clicking your ad",
+                        "A tool to monitor your competitor's activities",
+                        "A feature that automatically optimizes your bids"
+                    ],
+                    correct: 1,
+                    explanation: "Conversion tracking allows you to see what happens after a customer interacts with your ads. It tracks valuable actions like purchases, sign-ups, or calls, helping you understand your campaign's return on investment. <a href='https://support.google.com/google-ads/answer/1722022' target='_blank'>Learn more</a>",
+                    source: "Google Ads Help Center"
+                },
+                {
+                    question: "What does CTR (Click-Through Rate) measure?",
+                    options: [
+                        "The total number of clicks your ads receive",
+                        "The percentage of impressions that resulted in clicks",
+                        "The cost per thousand impressions",
+                        "The conversion rate of your landing page"
+                    ],
+                    correct: 1,
+                    explanation: "CTR is calculated as the number of clicks divided by the number of impressions, expressed as a percentage. It shows how often people click your ads when they see them. A higher CTR typically indicates more relevant ads. <a href='https://support.google.com/google-ads/answer/6167118' target='_blank'>Learn more</a>",
+                    source: "Google Ads Help Center"
+                },
+                {
+                    question: "What is the default keyword match type for all keywords?",
+                    options: [
+                        "Exact Match",
+                        "Phrase Match",
+                        "Broad Match",
+                        "Modified Broad Match"
+                    ],
+                    correct: 2,
+                    explanation: "Broad Match is the default match type assigned to all keywords because it is the most comprehensive. It reaches the widest range of searches related to your keyword. <a href='https://support.google.com/google-ads/answer/7478529' target='_blank'>Learn more</a>",
+                    source: "Google Ads Help Center"
+                }
+            ],
+            intermediate: [
+                {
+                    question: "What does the 'Expected Clickthrough Rate' component of Quality Score measure?",
+                    options: [
+                        "The actual CTR your ad has received",
+                        "Google's estimate of how likely your ad is to be clicked compared to other ads in the same position",
+                        "The percentage of impressions that turned into conversions",
+                        "The ratio of your budget spent to clicks received"
+                    ],
+                    correct: 1,
+                    explanation: "Expected CTR is Google's estimate of how likely your ad is to be clicked compared to other ads shown in the same position. It's a key component of Quality Score and directly impacts your cost per click. <a href='https://support.google.com/google-ads/answer/6167123' target='_blank'>Learn more</a>",
+                    source: "Google Ads Help Center"
+                },
+                {
+                    question: "Which of the following is an audience targeting method available in Google Ads?",
+                    options: [
+                        "Lookalike Segments (Demand Gen campaigns)",
+                        "Customer Match (uploading customer lists)",
+                        "In-market Audiences",
+                        "All of the above"
+                    ],
+                    correct: 3,
+                    explanation: "Google Ads offers multiple audience targeting methods including Customer Match for uploading customer lists, Lookalike segments (available in Demand Gen campaigns), and in-market audiences. These can be combined to reach the right people at the right time. <a href='https://support.google.com/google-ads/answer/13541369' target='_blank'>Lookalike segments</a>, <a href='https://support.google.com/google-ads/answer/6379332' target='_blank'>Customer Match</a>, and <a href='https://support.google.com/google-ads/answer/2497941' target='_blank'>audience segments</a>.",
+                    source: "Google Ads Help Center"
+                },
+                {
+                    question: "What is Smart Bidding in Google Ads?",
+                    options: [
+                        "A manual bidding strategy where you adjust bids throughout the day",
+                        "A set of automated bid strategies using Google AI to optimize for conversions or conversion value in each auction",
+                        "A bidding strategy that increases bids on high-performing keywords",
+                        "A system that matches your bids with competitor bids"
+                    ],
+                    correct: 1,
+                    explanation: "Smart Bidding is a set of automated bid strategies that uses Google's AI to optimize for conversions or conversion value in each and every auction. It adjusts bids based on real-time signals to help you achieve your conversion goals efficiently. <a href='https://support.google.com/google-ads/answer/2472725' target='_blank'>Learn more</a>",
+                    source: "Google Ads Help Center"
+                },
+                {
+                    question: "What is the primary benefit of higher Quality Scores in Google Ads?",
+                    options: [
+                        "More impressions and clicks",
+                        "Better ad positions and lower costs for the same position",
+                        "Higher conversion rates",
+                        "Automatic campaign optimization"
+                    ],
+                    correct: 1,
+                    explanation: "The higher your Quality Score for a keyword, the less you pay for a given ad position. Additionally, higher ad quality generally leads to better ad positions. This creates a cost advantage for well-optimized campaigns. <a href='https://support.google.com/google-ads/answer/6167123' target='_blank'>Learn more</a>",
+                    source: "Google Ads Help Center"
+                },
+                {
+                    question: "How should you approach account organization for multiple business goals?",
+                    options: [
+                        "Mix all business goals in a single campaign for efficiency",
+                        "Create one ad group per product/service regardless of goals",
+                        "Organize with a category or business goal in mind, bundling related ads with related keywords",
+                        "Let Google Ads automatically organize your account"
+                    ],
+                    correct: 2,
+                    explanation: "A common best practice is to organize your account with a category or business goal in mind. This ensures related ads are grouped together with related keywords, making management and optimization easier. <a href='https://support.google.com/google-ads/answer/14752782' target='_blank'>Learn more</a>",
+                    source: "Google Ads Help Center"
+                },
+                {
+                    question: "What is Customer Match in Google Ads?",
+                    options: [
+                        "An algorithm that finds users similar to your current customers",
+                        "A feature that automatically matches your ads to customer interests",
+                        "A targeting method that lets you upload customer data to target your existing customers with ads",
+                        "A tool that matches your landing pages to customer needs"
+                    ],
+                    correct: 2,
+                    explanation: "Customer Match lets you target ads to your customers using the data they share with you. You can create a CSV file with customer data or connect a data source to incorporate this targeting into your campaigns. <a href='https://support.google.com/google-ads/answer/6379332' target='_blank'>Learn more</a>",
+                    source: "Google Ads Help Center"
+                },
+                {
+                    question: "What is Optimized Targeting in Google Ads?",
+                    options: [
+                        "Manually adjusting targeting parameters for each ad",
+                        "A feature that expands to users likely to convert by creating a converter profile based on real-time conversion data",
+                        "Bidding on competitor keywords automatically",
+                        "Setting geographic location-based restrictions"
+                    ],
+                    correct: 1,
+                    explanation: "Optimized Targeting expands your reach to users likely to convert. It creates a profile of what a converter looks like based on your real-time conversion data, helping you find new customers with similar characteristics. <a href='https://support.google.com/google-ads/answer/10537509' target='_blank'>Learn more</a>",
+                    source: "Google Ads Help Center"
+                },
+                {
+                    question: "What is a Performance Max campaign?",
+                    options: [
+                        "A campaign type limited to search ads only",
+                        "A goal-based campaign type that accesses all Google ad inventory from a single campaign using AI automation",
+                        "A campaign exclusively for video advertising",
+                        "An advanced bidding strategy for experienced advertisers"
+                    ],
+                    correct: 1,
+                    explanation: "Performance Max is a goal-based campaign type that allows you to access Google's full range of inventory (YouTube, Display, Search, Discover, Gmail, and Maps) from a single campaign. It uses AI to automate bidding, audience targeting, and creative optimization. <a href='https://support.google.com/google-ads/answer/10724817' target='_blank'>Learn more</a>",
+                    source: "Google Ads Help Center"
+                },
+                {
+                    question: "What conversion goals help you measure success in Google Ads?",
+                    options: [
+                        "Only purchase transactions count as conversions",
+                        "Conversions can include purchases, sign-ups, calls, downloads, or other valuable actions you define",
+                        "Conversions are automatically tracked without setup",
+                        "Conversion goals only apply to Shopping campaigns"
+                    ],
+                    correct: 1,
+                    explanation: "Conversion goals are customizable and help you track the actions that matter most to your business. These can include website purchases, app installs, phone calls, form submissions, or any other action you want to measure. <a href='https://support.google.com/google-ads/answer/10995103' target='_blank'>Learn more</a>",
+                    source: "Google Ads Help Center"
+                },
+                {
+                    question: "How does Phrase Match differ from Broad Match in reach?",
+                    options: [
+                        "Phrase Match reaches more searches than Broad Match",
+                        "Phrase Match reaches the same searches as Exact Match",
+                        "Phrase Match reaches all Exact Match searches plus more, but fewer than Broad Match",
+                        "Phrase Match and Broad Match reach the same searches"
+                    ],
+                    correct: 2,
+                    explanation: "The match type hierarchy is: Exact Match (most control, fewest searches) → Phrase Match → Broad Match (least control, most searches). Phrase Match reaches all queries that Exact Match reaches, plus additional relevant searches. <a href='https://support.google.com/google-ads/answer/7478529' target='_blank'>Learn more</a>",
+                    source: "Google Ads Help Center"
+                }
+            ]
+        };
+
+        // Quiz State
+        let currentQuiz = null;
+        let currentLevel = null;
+        let currentQuestion = 0;
+        let answers = [];
+        let showedFeedback = [];
+
+        function startQuiz(level) {
+            currentLevel = level;
+            currentQuiz = quizzes[level];
+            currentQuestion = 0;
+            answers = new Array(currentQuiz.length).fill(null);
+            showedFeedback = new Array(currentQuiz.length).fill(false);
+
+            document.getElementById('homeScreen').style.display = 'none';
+            document.getElementById('quizScreen').style.display = 'block';
+            document.getElementById('resultsScreen').style.display = 'none';
+
+            displayQuestion();
+        }
+
+        function displayQuestion() {
+            const q = currentQuiz[currentQuestion];
+
+            document.getElementById('currentQuestion').textContent = currentQuestion + 1;
+            document.getElementById('totalQuestions').textContent = currentQuiz.length;
+            document.getElementById('levelBadge').textContent = currentLevel === 'beginner' ? 'BEGINNER' : 'INTERMEDIATE';
+            document.getElementById('question').textContent = q.question;
+
+            const optionsDiv = document.getElementById('options');
+            optionsDiv.innerHTML = '';
+
+            q.options.forEach((option, index) => {
+                const label = document.createElement('label');
+                label.className = 'option';
+                if (answers[currentQuestion] === index) {
+                    label.classList.add('selected');
+                }
+
+                label.innerHTML = `
+                    <input type="radio" name="answer" value="${index}" ${answers[currentQuestion] === index ? 'checked' : ''}>
+                    ${option}
+                `;
+
+                label.addEventListener('change', () => selectAnswer(index));
+                optionsDiv.appendChild(label);
+            });
+
+            updateProgressBar();
+            updateButtonStates();
+
+            const feedback = document.getElementById('feedback');
+            if (showedFeedback[currentQuestion]) {
+                displayFeedback(q, answers[currentQuestion]);
+            } else {
+                feedback.classList.remove('show');
+            }
+        }
+
+        function selectAnswer(index) {
+            answers[currentQuestion] = index;
+            updateButtonStates();
+
+            const q = currentQuiz[currentQuestion];
+            if (!showedFeedback[currentQuestion]) {
+                showedFeedback[currentQuestion] = true;
+                displayFeedback(q, index);
+            }
+        }
+
+        function displayFeedback(q, selectedIndex) {
+            const feedback = document.getElementById('feedback');
+            const isCorrect = selectedIndex === q.correct;
+
+            feedback.className = `feedback show ${isCorrect ? 'correct' : 'incorrect'}`;
+            feedback.innerHTML = `
+                <strong>${isCorrect ? 'Correct!' : 'Incorrect'}</strong><br>
+                ${q.explanation}
+            `;
+        }
+
+        function updateButtonStates() {
+            const nextBtn = document.getElementById('nextBtn');
+            nextBtn.disabled = answers[currentQuestion] === null;
+        }
+
+        function updateProgressBar() {
+            const progress = ((currentQuestion + 1) / currentQuiz.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < currentQuiz.length - 1) {
+                currentQuestion++;
+                displayQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                displayQuestion();
+            }
+        }
+
+        function showResults() {
+            const correct = answers.filter((answer, index) => answer === currentQuiz[index].correct).length;
+            const total = currentQuiz.length;
+            const percentage = Math.round((correct / total) * 100);
+
+            document.getElementById('quizScreen').style.display = 'none';
+            document.getElementById('resultsScreen').style.display = 'block';
+
+            document.getElementById('scoreDisplay').textContent = percentage + '%';
+            document.getElementById('correctCount').textContent = correct;
+            document.getElementById('totalCount').textContent = total;
+            document.getElementById('levelDisplay').textContent = currentLevel === 'beginner' ? 'Beginner' : 'Intermediate';
+
+            const messageEl = document.getElementById('resultMessage');
+            let message = '';
+            let messageClass = '';
+
+            if (percentage >= 80) {
+                message = `Excellent work! You have a strong understanding of Google Ads ${currentLevel === 'beginner' ? 'fundamentals' : 'optimization strategies'}. Continue learning with advanced topics or real-world campaign management.`;
+                messageClass = 'excellent';
+            } else if (percentage >= 60) {
+                message = `Good job! You're on the right track. Review the questions you missed to strengthen your knowledge before managing live campaigns.`;
+                messageClass = 'good';
+            } else {
+                message = `You're getting started! Review the official Google Ads documentation and take the quiz again to improve your score. Each mistake is a learning opportunity.`;
+                messageClass = 'fair';
+            }
+
+            messageEl.className = `feedback-message ${messageClass}`;
+            messageEl.textContent = message;
+        }
+
+        function goHome() {
+            document.getElementById('homeScreen').style.display = 'block';
+            document.getElementById('quizScreen').style.display = 'none';
+            document.getElementById('resultsScreen').style.display = 'none';
+        }
+
+        function retakeBeginner() {
+            startQuiz('beginner');
+        }
+
+        function retakeIntermediate() {
+            startQuiz('intermediate');
+        }
+    </script>
+</body>
+</html>
