@@ -383,6 +383,133 @@
             flex: 1;
         }
 
+        /* Share Results */
+        .share-section {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .share-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #f5f7fa;
+            margin-bottom: 20px;
+        }
+
+        .results-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            border-radius: 12px;
+            padding: 40px 30px;
+            margin: 20px 0;
+            text-align: center;
+            id: resultCard;
+        }
+
+        .results-card-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #f5f7fa;
+            margin-bottom: 15px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .results-card-score {
+            font-size: 64px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00d4ff 0%, #0099ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 20px 0;
+        }
+
+        .results-card-text {
+            color: #b3bcc7;
+            font-size: 14px;
+            margin: 15px 0;
+            line-height: 1.6;
+        }
+
+        .results-card-details {
+            color: #8b95a6;
+            font-size: 13px;
+            margin-top: 20px;
+        }
+
+        .share-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .share-btn {
+            padding: 14px 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.06);
+            color: #e1e8ed;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .share-btn:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .share-btn.copy-link {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.15) 0%, rgba(0, 212, 255, 0.05) 100%);
+            border-color: rgba(0, 212, 255, 0.3);
+            color: #93c5fd;
+        }
+
+        .share-btn.copy-link:hover {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.25) 0%, rgba(0, 212, 255, 0.15) 100%);
+            border-color: rgba(0, 212, 255, 0.5);
+        }
+
+        .share-btn.download-image {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.15) 0%, rgba(34, 197, 94, 0.05) 100%);
+            border-color: rgba(34, 197, 94, 0.3);
+            color: #86efac;
+        }
+
+        .share-btn.download-image:hover {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.25) 0%, rgba(34, 197, 94, 0.15) 100%);
+            border-color: rgba(34, 197, 94, 0.5);
+        }
+
+        .copy-feedback {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #22c55e;
+            color: #0f1419;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .copy-feedback.show {
+            opacity: 1;
+        }
+
         @media (max-width: 600px) {
             .container {
                 padding: 24px;
@@ -478,9 +605,34 @@
                 <button class="btn-secondary" onclick="retakeIntermediate()">Intermediate</button>
                 <button class="btn-primary" onclick="goHome()">Back to Home</button>
             </div>
+
+            <div class="share-section">
+                <div class="share-title">Share Your Results</div>
+
+                <div class="results-card" id="resultCard">
+                    <div class="results-card-title">Google Ads Quiz</div>
+                    <div class="results-card-score" id="shareScore">0%</div>
+                    <div class="results-card-text" id="shareLevel">-</div>
+                    <div class="results-card-details" id="shareDetails">
+                        <div>Correct: <span id="shareCorrect">0</span>/<span id="shareTotal">0</span></div>
+                    </div>
+                </div>
+
+                <div class="share-buttons">
+                    <button class="share-btn copy-link" onclick="copyShareLink()">
+                        Link: Copy Shareable Link
+                    </button>
+                    <button class="share-btn download-image" onclick="downloadResultsImage()">
+                        Image: Download Results
+                    </button>
+                </div>
+            </div>
         </div>
+
+        <div class="copy-feedback" id="copyFeedback">Copied to clipboard!</div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script>
         // Quiz Questions Database
         const quizzes = {
@@ -867,6 +1019,9 @@
 
             messageEl.className = `feedback-message ${messageClass}`;
             messageEl.textContent = message;
+
+            // Update share card
+            updateShareCard(correct, total, percentage, currentLevel);
         }
 
         function goHome() {
@@ -882,6 +1037,116 @@
         function retakeIntermediate() {
             startQuiz('intermediate');
         }
+
+        // Share Functionality
+        function copyShareLink() {
+            const correct = answers.filter((answer, index) => answer === currentQuiz[index].correct).length;
+            const total = currentQuiz.length;
+            const percentage = Math.round((correct / total) * 100);
+
+            const shareData = btoa(JSON.stringify({
+                level: currentLevel,
+                correct: correct,
+                total: total,
+                percentage: percentage
+            }));
+
+            const shareUrl = `${window.location.origin}${window.location.pathname}?results=${shareData}`;
+
+            navigator.clipboard.writeText(shareUrl).then(() => {
+                showCopyFeedback();
+            });
+        }
+
+        function downloadResultsImage() {
+            const card = document.getElementById('resultCard');
+
+            // Temporarily adjust styling for screenshot
+            const originalBg = card.style.background;
+            card.style.background = 'rgba(15, 20, 25, 1)';
+
+            html2canvas(card, {
+                backgroundColor: '#0f1419',
+                scale: 2,
+                allowTaint: true,
+                useCORS: true
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.href = canvas.toDataURL('image/png');
+                link.download = `google-ads-quiz-${currentLevel}-${new Date().getTime()}.png`;
+                link.click();
+
+                // Restore original styling
+                card.style.background = originalBg;
+            });
+        }
+
+        function showCopyFeedback() {
+            const feedback = document.getElementById('copyFeedback');
+            feedback.classList.add('show');
+            setTimeout(() => {
+                feedback.classList.remove('show');
+            }, 3000);
+        }
+
+        function updateShareCard(correct, total, percentage, level) {
+            document.getElementById('shareScore').textContent = percentage + '%';
+            document.getElementById('shareLevel').textContent = level === 'beginner' ? 'Beginner Level' : 'Intermediate Level';
+            document.getElementById('shareCorrect').textContent = correct;
+            document.getElementById('shareTotal').textContent = total;
+        }
+
+        function checkForSharedResults() {
+            const params = new URLSearchParams(window.location.search);
+            const resultsData = params.get('results');
+
+            if (resultsData) {
+                try {
+                    const data = JSON.parse(atob(resultsData));
+
+                    // Display shared results
+                    document.getElementById('homeScreen').style.display = 'none';
+                    document.getElementById('quizScreen').style.display = 'none';
+                    document.getElementById('resultsScreen').style.display = 'block';
+
+                    document.getElementById('scoreDisplay').textContent = data.percentage + '%';
+                    document.getElementById('correctCount').textContent = data.correct;
+                    document.getElementById('totalCount').textContent = data.total;
+                    document.getElementById('levelDisplay').textContent = data.level === 'beginner' ? 'Beginner' : 'Intermediate';
+
+                    updateShareCard(data.correct, data.total, data.percentage, data.level);
+
+                    const messageEl = document.getElementById('resultMessage');
+                    let message = '';
+                    let messageClass = '';
+
+                    if (data.percentage >= 80) {
+                        message = 'Excellent score! This person has a strong understanding of Google Ads.';
+                        messageClass = 'excellent';
+                    } else if (data.percentage >= 60) {
+                        message = 'Good score! This person is on the right track with Google Ads knowledge.';
+                        messageClass = 'good';
+                    } else {
+                        message = 'This person is building their Google Ads knowledge. Keep learning!';
+                        messageClass = 'fair';
+                    }
+
+                    messageEl.className = `feedback-message ${messageClass}`;
+                    messageEl.textContent = message;
+
+                    // Update button text
+                    document.querySelector('.results-buttons').innerHTML = `
+                        <button class="btn-secondary" onclick="location.href=window.location.pathname">Take the Quiz</button>
+                        <button class="btn-primary" onclick="location.href=window.location.pathname">Back to Home</button>
+                    `;
+                } catch (e) {
+                    console.error('Error loading shared results:', e);
+                }
+            }
+        }
+
+        // Check for shared results on page load
+        window.addEventListener('load', checkForSharedResults);
     </script>
 </body>
 </html>
